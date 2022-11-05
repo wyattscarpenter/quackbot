@@ -1,0 +1,15 @@
+{
+  "name": "greet",
+  "main": "greet.py",
+  "directory":"greet",
+  "commands": [
+    {
+      "command": "hello",
+      "description": "have quackbot say hi to you"
+    },
+    {
+      "command": "goodbye",
+      "description": "have quackbot say goodbye to you"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+    "name": "memes",
+    "main": "memes.py",
+    "directory": "memes",
+    "commands": [
+        {
+            "command": "rdj",
+            "description": "(i'm stuff)"
+        },
+        {
+            "command": "clueless",
+            "description": "hmmm today i will use a discord bot"
+        },
+        {
+            "command": "yud",
+            "description": "yud"
+        }
+    ]
+}

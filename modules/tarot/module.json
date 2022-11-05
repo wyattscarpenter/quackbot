@@ -1,0 +1,25 @@
+{
+    "name": "tarot",
+    "main": "tarot.py",
+    "directory": "tarot",
+    "commands": [
+        {
+            "command": "tarot",
+            "description": "draws a tarot card from the full deck."
+        },
+        {
+            "command": "tarot major",
+            "description": "draws from the Major Arcana only"
+        },
+        {
+            "command": "tarot minor",
+            "description": "draws from the Minor Arcana only"
+        }
+		,
+
+		{"command":"tarot search",
+		"description": "when followed by a card name, shows information about that card. uses fuzzy string matching, so the search term doesn't need to be exact"
+    
+		}
+	]
+}
