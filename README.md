@@ -4,7 +4,7 @@
 
 Currently Quackbot includes these features:
 
-  - **Todo**: A wrapper for my other project, [Della](placeholder) (which in turn is largely a wrapper for my *other* other project [dateparse.py](placeholder) -- it's a real Matryoshka situation.) See that repo for details, but in a nutshell this allows creating and managing todo items using a syntax that's very close to natural language. 
+  - **Todo**: A wrapper for my other project, [Della](https://github.com/keagud/Della) (which in turn is largely a wrapper for my *other* other project [dateparse.py](https://github.com/keagud/dateparse.py) -- it's a real Matryoshka situation.) See that repo for details, but in a nutshell this allows creating and managing todo items using a syntax that's very close to natural language. 
 
   - **Memes**: Sometimes you need a specific reaction image and can't spare the time to make one bespoke in GIMP. The Memes module exposes a collection of commands to quickly and automatically place captions on a blank image macro so you never have to stop posting.
 
