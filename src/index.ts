@@ -1,36 +1,15 @@
-/* eslint node/no-unpublished-require: "off" */
+import {QuackClient, secrets} from './util';
 
-const pathutil = require('path');
-const filesystem = require('fs');
 
-const rootDir = (() => {
-  let checkDir: string = pathutil.resolve('.');
-  const pathsep = pathutil.sep;
+const {Events, REST, GatewayIntentBits, Collection} = require('discord.js');
 
-  const fullPath = pathutil.resolve('.').split(pathsep).reverse();
 
-  for (let _ of fullPath) {
-    let dirContents = filesystem.readdirSync(checkDir);
 
-    if (dirContents.includes('package.json')) {
-      return checkDir;
-    }
-    checkDir = pathutil.join(checkDir, '..');
-  }
+const client = new QuackClient({intents: [GatewayIntentBits.Guilds]});
+client.commands = new Collection();
 
-  throw new Error("Can't find the project root");
-})();
-
-const secretPath = pathutil.join(rootDir, './secret.json');
-
-const {Client, Events, GatewayIntentBits} = require('discord.js');
-
-const {token} = require(secretPath);
-
-const client = new Client({intents: [GatewayIntentBits.Guilds]});
-
-client.once(Events.ClientReady, (c: any) => {
+client.once(Events.ClientReady, (c: typeof Events.ClientReady) => {
   console.log(`Logged in as ${c.user.tag}`);
 });
 
-client.login(token);
+client.login(secrets.token);
