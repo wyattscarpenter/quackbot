@@ -1,0 +1,35 @@
+{
+  "name": "quackbot",
+  "version": "1.0.0",
+  "description": "The swiss army discord bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keagud/Quackbot.git"
+  },
+  "keywords": [
+    "discord"
+  ],
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/keagud/Quackbot/issues"
+  },
+  "homepage": "https://github.com/keagud/Quackbot#readme",
+  "devDependencies": {
+    "@types/node": "^14.11.2",
+    "gts": "^3.1.1",
+    "prettier": "^2.8.4",
+    "typescript": "~4.7.0"
+  }
+}
