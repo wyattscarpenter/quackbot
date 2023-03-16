@@ -1,24 +1,36 @@
-console.log('Try npm run lint/fix!');
+/* eslint node/no-unpublished-require: "off" */
 
-const longString =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut aliquet diam.';
+const pathutil = require('path');
+const filesystem = require('fs');
 
-const trailing = 'Semicolon';
+const rootDir = (() => {
+  let checkDir: string = pathutil.resolve('.');
+  const pathsep = pathutil.sep;
 
-const why = 'am I tabbed?';
+  const fullPath = pathutil.resolve('.').split(pathsep).reverse();
 
-export function doSomeStuff(
-  withThis: string,
-  andThat: string,
-  andThose: string[]
-) {
-  //function on one line
-  if (!andThose.length) {
-    return false;
+  for (let _ of fullPath) {
+    let dirContents = filesystem.readdirSync(checkDir);
+
+    if (dirContents.includes('package.json')) {
+      return checkDir;
+    }
+    checkDir = pathutil.join(checkDir, '..');
   }
-  console.log(withThis);
-  console.log(andThat);
-  console.dir(andThose);
-  return;
-}
-// TODO: more examples
+
+  throw new Error("Can't find the project root");
+})();
+
+const secretPath = pathutil.join(rootDir, './secret.json');
+
+const {Client, Events, GatewayIntentBits} = require('discord.js');
+
+const {token} = require(secretPath);
+
+const client = new Client({intents: [GatewayIntentBits.Guilds]});
+
+client.once(Events.ClientReady, (c: any) => {
+  console.log(`Logged in as ${c.user.tag}`);
+});
+
+client.login(token);

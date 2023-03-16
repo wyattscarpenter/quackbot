@@ -3,6 +3,8 @@ temp/
 core/config.json
 build/
 
+secret.json
+
 lib-cov
 *.seed
 *.log
