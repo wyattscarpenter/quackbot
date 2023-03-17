@@ -3,7 +3,8 @@ temp/
 core/config.json
 build/
 
-secret.json
+#TODO uncomment before repo is public
+#secret.json
 
 lib-cov
 *.seed
