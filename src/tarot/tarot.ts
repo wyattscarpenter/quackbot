@@ -1,4 +1,5 @@
-import {rootDir, pathutil} from '../util';
+import { rootDir } from "../util";
+import path = require("node:path");
 
 interface CardData {
   title: string;
@@ -16,10 +17,10 @@ interface Card {
   image: string;
 }
 
-const cards = require(pathutil.join(rootDir, 'data', 'cards.json'));
+const cards = require(path.join(rootDir, "data", "cards.json"));
 
-const unwrapDeck = (obj: Object) => {
-  return Object.entries(obj).map(i => i[1]);
+const unwrapDeck = (obj: object) => {
+  return Object.entries(obj).map((i) => i[1]);
 };
 
 const majorDeck: Array<CardData> = unwrapDeck(cards.major);
@@ -31,16 +32,16 @@ function drawFromDeck(deck: Array<CardData>, reversedChance = 0.3): Card {
 
   const drawnCardData = deck[randChoice];
 
-  const reversed: Boolean = Math.random() < reversedChance;
+  const reversed: boolean = Math.random() < reversedChance;
 
   const [meaning, image] = reversed
     ? [drawnCardData.reversed, drawnCardData.image_reversed]
     : [drawnCardData.meaning, drawnCardData.image];
 
-  const title = drawnCardData.title + (reversed ? ' (reversed)' : '');
+  const title = drawnCardData.title + (reversed ? " (reversed)" : "");
   const description: string = drawnCardData.description;
 
-  return {title, description, meaning, image};
+  return { title, description, meaning, image };
 }
 
 export const drawMajor = () => drawFromDeck(majorDeck);

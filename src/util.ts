@@ -29,7 +29,7 @@ export const rootDir = (() => {
 
   const fullPath = path.resolve('.').split(pathsep).reverse();
 
-  for (let _ of fullPath) {
+  for (const _ of fullPath) {
     const dirContents = filesystem.readdirSync(checkDir);
 
     if (dirContents.includes('package.json')) {
