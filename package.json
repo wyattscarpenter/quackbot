@@ -35,6 +35,8 @@
     "typescript": "~4.7.0"
   },
   "dependencies": {
-    "discord.js": "^14.8.0"
+    "@jimp/types": "^0.22.7",
+    "discord.js": "^14.8.0",
+    "jimp": "^0.22.7"
   }
 }
