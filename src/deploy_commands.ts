@@ -1,10 +1,18 @@
-import {REST, Routes} from 'discord.js';
-import {secrets} from './util';
-import {commands} from './commands';
+import { REST, Routes, SlashCommandBuilder } from "discord.js";
+import { secrets } from "./util";
+import { commands } from "./commands";
 
-const {token, clientId, guildId} = secrets;
+const rest = new REST({ version: "10" }).setToken(secrets.token);
 
-const rest = new REST({version: '10'}).setToken(token);
+const commands_json = [];
+
+for (let c of commands) {
+  commands_json.push(c.data.toJSON());
+}
+
+
+console.log(commands_json);
+
 
 (async () => {
   try {
@@ -13,12 +21,15 @@ const rest = new REST({version: '10'}).setToken(token);
     );
 
     // The put method is used to fully refresh all commands in the guild with the current set
+
     const data = await rest.put(
-      Routes.applicationGuildCommands(clientId, guildId),
-      {body: commands}
+      Routes.applicationGuildCommands(secrets.clientId, secrets.guildId),
+      { body: commands_json }
     );
 
-    //		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+    console.log(
+      `Successfully reloaded ${commands.length} application (/) commands.`
+    );
   } catch (error) {
     // And of course, make sure you catch and log any errors!
     console.error(error);

@@ -10,7 +10,7 @@ interface CardData {
   image_reversed: string;
 }
 
-interface Card {
+export interface Card {
   title: string;
   description: string;
   meaning: string;

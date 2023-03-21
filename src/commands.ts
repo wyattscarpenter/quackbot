@@ -1,9 +1,23 @@
-import {Message} from 'discord.js';
+import {
+  Message,
+  SlashCommandBuilder,
+  Interaction,
+  CommandInteraction,
+} from "discord.js";
 
-import {makeQuackCommand, QuackCommand} from './util';
+import { SlashCommand } from "./util";
 
-export const commands: Array<QuackCommand> = [
-  makeQuackCommand('ping', 'pings for a reply', async (m: Message) => {
-    m.reply('Pong');
-  }),
+import { tarotCommand as tc } from "./tarot/commands";
+export const commands: Array<SlashCommand> = [
+  {
+    data: new SlashCommandBuilder()
+      .setName("ping")
+      .setDescription("Reply with pong"),
+
+    async execute(interaction: CommandInteraction) {
+      await interaction.reply("Pong!");
+    },
+  },
+
+  tc,
 ];
