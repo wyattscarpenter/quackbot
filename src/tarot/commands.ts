@@ -35,7 +35,7 @@ const tarotCommandData = new SlashCommandBuilder()
   )
   .addStringOption((option: SlashCommandStringOption) =>
     option
-      .setName("Query")
+      .setName("query")
       .setRequired(false)
       .setDescription("Ask a specific question")
   );
