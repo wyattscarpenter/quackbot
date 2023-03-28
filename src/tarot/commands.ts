@@ -1,4 +1,6 @@
-import { Card, drawCard, drawMajor, drawMinor } from "./tarot";
+import { Card, drawCard, drawMajor, drawMinor, formatCardInfo } from "./tarot";
+
+const { MessageAttachment } = require("discord.js");
 
 import { SlashCommand, rootDir } from "../util";
 import path = require("node:path");
@@ -9,7 +11,7 @@ import {
   CommandInteraction,
   AttachmentBuilder,
   Message,
-  MessageCreateOptions
+  MessageCreateOptions,
 } from "discord.js";
 
 export const DecksMap = new Map();
@@ -46,13 +48,17 @@ const execute = async (interaction: CommandInteraction) => {
   }
   const deck = interaction.options.getString("deck") ?? "all";
   const drawnCard: Card = DecksMap.get(deck)();
+  console.log(drawnCard);
+  const message_text = formatCardInfo(drawnCard);
 
-  const card_image = new AttachmentBuilder(
-    path.join(rootDir, "data/card-art/"),
-    { name: drawnCard.image }
-  );
+  const card_image_path = path.join(rootDir, "data/card-art/", drawnCard.image);
+  console.log(card_image_path);
 
-  await interaction.reply(deck);
+  const card_image = new AttachmentBuilder(card_image_path, {name: drawnCard.image});
+
+  console.log(card_image);
+
+  await interaction.reply({ content: message_text, files: [card_image] });
 };
 
 export const tarotCommand: SlashCommand = {

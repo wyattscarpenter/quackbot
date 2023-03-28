@@ -1,4 +1,7 @@
 
+run: ts
+	node build
+
 ts: install
 	npx tsc
 

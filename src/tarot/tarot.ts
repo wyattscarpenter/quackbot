@@ -44,6 +44,12 @@ function drawFromDeck(deck: Array<CardData>, reversedChance = 0.3): Card {
   return { title, description, meaning, image };
 }
 
+export const formatCardInfo = (card: Card): string => {
+  const { title, description, meaning, image } = card;
+
+  return `**${title.toUpperCase()}**\n*${description}*\n*${meaning}*`;
+};
+
 export const drawMajor = () => drawFromDeck(majorDeck);
 export const drawMinor = () => drawFromDeck(minorDeck);
 export const drawCard = () => drawFromDeck(completeDeck);
