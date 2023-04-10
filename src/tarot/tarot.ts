@@ -28,6 +28,7 @@ const minorDeck: Array<CardData> = unwrapDeck(cards.minor);
 const completeDeck = majorDeck.concat(minorDeck);
 
 function drawFromDeck(deck: Array<CardData>, reversedChance = 0.3): Card {
+  
   const randChoice = Math.floor(Math.random() * deck.length);
 
   const drawnCardData = deck[randChoice];

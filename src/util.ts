@@ -36,5 +36,7 @@ export const rootDir = (() => {
   throw new Error("Can't find the project root");
 })();
 
+export const dataPath = path.join(rootDir, "data");
+
 export const secretPath = path.join(rootDir, "./secret.json");
 export const secrets = require(secretPath);

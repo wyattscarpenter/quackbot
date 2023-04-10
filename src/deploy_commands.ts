@@ -10,9 +10,7 @@ for (let c of commands) {
   commands_json.push(c.data.toJSON());
 }
 
-
 console.log(commands_json);
-
 
 (async () => {
   try {
@@ -21,7 +19,6 @@ console.log(commands_json);
     );
 
     // The put method is used to fully refresh all commands in the guild with the current set
-
     const data = await rest.put(
       Routes.applicationGuildCommands(secrets.clientId, secrets.guildId),
       { body: commands_json }

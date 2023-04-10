@@ -10,8 +10,6 @@ import {
   SlashCommandStringOption,
   CommandInteraction,
   AttachmentBuilder,
-  Message,
-  MessageCreateOptions,
 } from "discord.js";
 
 export const DecksMap = new Map();
@@ -54,14 +52,18 @@ const execute = async (interaction: CommandInteraction) => {
   const card_image_path = path.join(rootDir, "data/card-art/", drawnCard.image);
   console.log(card_image_path);
 
-  const card_image = new AttachmentBuilder(card_image_path, {name: drawnCard.image});
+  const card_image = new AttachmentBuilder(card_image_path, {
+    name: drawnCard.image,
+  });
 
   console.log(card_image);
 
   await interaction.reply({ content: message_text, files: [card_image] });
 };
 
-export const tarotCommand: SlashCommand = {
-  data: tarotCommandData,
-  execute: execute,
-};
+export const commands: Array<SlashCommand> = [
+  {
+    data: tarotCommandData,
+    execute: execute,
+  },
+];
