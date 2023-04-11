@@ -1,9 +1,7 @@
 import { Card, drawCard, drawMajor, drawMinor, formatCardInfo } from "./tarot";
 
-const { MessageAttachment } = require("discord.js");
-
 import { SlashCommand, rootDir } from "../util";
-import path = require("node:path");
+import * as path from "node:path";
 
 import {
   SlashCommandBuilder,

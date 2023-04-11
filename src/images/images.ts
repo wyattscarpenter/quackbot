@@ -1,20 +1,22 @@
 import { rootDir, dataPath } from "../util";
 
-const path = require("node:path");
-const fs = require("node:fs");
+import * as path from "node:path";
+import * as fs from "node:fs";
 
-const gm = require("gm").subClass({ imageMagick: "7+" });
+import * as _gm from "gm";
+
+const gm = _gm.subClass({ imageMagick: true });
 
 const imagePath = path.join(dataPath, "image-templates");
 const fontsPath = path.join(dataPath, "fonts");
 
 // TODO possibly: make the macros a JSON for more modularity
 export interface ImageMacro {
+  name: string;
   filename: string;
   line_length: number;
 
   text_position: [number, number];
-  command_prefix: string;
 
   text_size?: number;
   font?: string;
@@ -27,7 +29,7 @@ const Clueless: ImageMacro = {
   text_position: [200, 40],
   text_size: 14,
   font: "FreeSerif.otf",
-  command_prefix: "clueless",
+  name: "clueless",
 };
 
 const Rdj: ImageMacro = {
@@ -36,10 +38,10 @@ const Rdj: ImageMacro = {
   text_position: [30, 150],
   text_size: 20,
   font: "FreeSans.otf",
-  command_prefix: "rdj",
+  name: "rdj",
 };
 
-export const MacroDefs = { clueless: Clueless, rdj: Rdj };
+export const MacroDefs = [Clueless, Rdj];
 
 const wrapText = (text: string, line_chars: number) => {
   const re = /\s+/;
@@ -63,7 +65,7 @@ const wrapText = (text: string, line_chars: number) => {
   return output_str;
 };
 
-async function addImageText(macro: ImageMacro, text: string) {
+export function addImageText(macro: ImageMacro, text: string) {
   const generatedPath = path.join(rootDir, "generated");
 
   if (!fs.existsSync(generatedPath)) {
@@ -71,18 +73,17 @@ async function addImageText(macro: ImageMacro, text: string) {
   }
 
   const output_path = path.join(generatedPath, `generated_${macro.filename}`);
+  fs.rmSync(output_path);
 
   gm(output_path).createDirectories();
 
   const image_base_path = path.join(imagePath, macro.filename);
-  const font_path = path.join(
-    fontsPath,
-    macro.font ?? "FreeSansBold.otf"
-  );
+  const font_path = path.join(fontsPath, macro.font ?? "FreeSansBold.otf");
 
   const [x, y] = macro.text_position;
   console.log(macro.filename);
-  gm(image_base_path)
+
+  const _ = gm(image_base_path)
     .stroke(macro.text_color ?? "#000000")
     .font(font_path, macro.text_size ?? 14)
     .drawText(x, y, wrapText(text, macro.line_length))
@@ -92,9 +93,3 @@ async function addImageText(macro: ImageMacro, text: string) {
 
   return output_path;
 }
-
-function main() {
-  addImageText(MacroDefs.rdj, "I have ported macros");
-}
-
-main();
