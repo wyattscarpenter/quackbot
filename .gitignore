@@ -3,6 +3,8 @@ temp/
 core/config.json
 build/
 
+generated/
+
 #TODO uncomment before repo is public
 #secret.json
 
