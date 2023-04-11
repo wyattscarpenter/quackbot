@@ -1,16 +1,13 @@
-import { rootDir, dataPath } from "../util";
+import { rootDir, imagePath, fontsPath } from "../util";
 
 import * as path from "node:path";
 import * as fs from "node:fs";
 
 import * as _gm from "gm";
-import { error } from "node:console";
 import { promisify } from "node:util";
 
-const gm = _gm.subClass({ imageMagick: true });
+export const gm = _gm.subClass({ imageMagick: true });
 
-const imagePath = path.join(dataPath, "image-templates");
-const fontsPath = path.join(dataPath, "fonts");
 
 // TODO possibly: make the macros a JSON for more modularity
 export interface ImageMacro {
