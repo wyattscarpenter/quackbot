@@ -4,6 +4,8 @@ import * as path from "node:path";
 import * as fs from "node:fs";
 
 import * as _gm from "gm";
+import { error } from "node:console";
+import { promisify } from "node:util";
 
 const gm = _gm.subClass({ imageMagick: true });
 
@@ -65,7 +67,7 @@ const wrapText = (text: string, line_chars: number) => {
   return output_str;
 };
 
-export function addImageText(macro: ImageMacro, text: string) {
+export async function addImageText(macro: ImageMacro, text: string) {
   const generatedPath = path.join(rootDir, "generated");
 
   if (!fs.existsSync(generatedPath)) {
@@ -73,7 +75,10 @@ export function addImageText(macro: ImageMacro, text: string) {
   }
 
   const output_path = path.join(generatedPath, `generated_${macro.filename}`);
-  fs.rmSync(output_path);
+
+  if (fs.existsSync(output_path)) {
+    fs.rmSync(output_path);
+  }
 
   gm(output_path).createDirectories();
 
@@ -83,13 +88,15 @@ export function addImageText(macro: ImageMacro, text: string) {
   const [x, y] = macro.text_position;
   console.log(macro.filename);
 
-  const _ = gm(image_base_path)
-    .stroke(macro.text_color ?? "#000000")
-    .font(font_path, macro.text_size ?? 14)
-    .drawText(x, y, wrapText(text, macro.line_length))
-    .write(output_path, (err: any) => {
-      console.log(err ? err : "OK");
-    });
+  const get_img = promisify((p: string, callback: (...args: any[]) => void) => {
+    gm(image_base_path)
+      .stroke(macro.text_color ?? "#000000")
+      .font(font_path, macro.text_size ?? 14)
+      .drawText(x, y, wrapText(text, macro.line_length))
+      .write(p, callback);
+  });
+
+  await get_img(output_path);
 
   return output_path;
 }

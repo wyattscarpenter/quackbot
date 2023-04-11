@@ -1,5 +1,5 @@
 
-run: ts
+run: register
 	node build
 
 ts: install

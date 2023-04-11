@@ -29,7 +29,10 @@ export const commands: Array<SlashCommand> = MacroDefs.map((macro) => {
     }
 
     const caption_text = interaction.options.getString("text") ?? "";
-    const generated_image_path = addImageText(macro, caption_text);
+    console.log(caption_text);
+
+    const generated_image_path = await addImageText(macro, caption_text);
+    console.log(generated_image_path);
 
     const generated_image = new AttachmentBuilder(generated_image_path, {
       name: path.basename(generated_image_path),
