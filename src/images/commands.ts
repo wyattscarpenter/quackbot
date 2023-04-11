@@ -1,5 +1,6 @@
 import { SlashCommand } from "../util";
 import { MacroDefs, addImageText } from "./images";
+import { getYud } from "./yud";
 
 import * as path from "node:path";
 
@@ -10,7 +11,7 @@ import {
   SlashCommandStringOption,
 } from "discord.js";
 
-export const commands: Array<SlashCommand> = MacroDefs.map((macro) => {
+let _commands: Array<SlashCommand> = MacroDefs.map((macro) => {
   const macroCommandData = new SlashCommandBuilder()
     .setName(macro.name)
     .setDescription(
@@ -43,3 +44,29 @@ export const commands: Array<SlashCommand> = MacroDefs.map((macro) => {
 
   return { data: macroCommandData, execute: execute };
 });
+
+const yudCommand = (() => {
+  const yudCommandData = new SlashCommandBuilder()
+    .setName("yud")
+    .setDescription("yud");
+
+  const execute = async (interaction: CommandInteraction) => {
+    if (!interaction.isChatInputCommand()) {
+      return;
+    }
+
+    const yud_path = await getYud();
+
+    const yud_image = new AttachmentBuilder(yud_path, {
+      name: path.basename(yud_path),
+    });
+
+    await interaction.reply({ files: [yud_image] });
+  };
+
+  return { data: yudCommandData, execute: execute };
+})();
+
+_commands.push(yudCommand);
+
+export const commands = _commands;
