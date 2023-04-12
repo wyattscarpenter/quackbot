@@ -76,13 +76,10 @@ const wrapText = (text: string, line_chars: number) => {
 };
 
 export async function addImageText(macro: ImageMacro, text: string) {
+  
   const generatedPath = path.join(rootDir, "generated");
 
-  if (!fs.existsSync(generatedPath)) {
-    fs.mkdirSync(generatedPath);
-  }
-
-  const output_path = path.join(generatedPath, `generated_${macro.filename}`);
+   const output_path = path.join(generatedPath, `generated_${macro.filename}`);
 
   if (fs.existsSync(output_path)) {
     fs.rmSync(output_path);

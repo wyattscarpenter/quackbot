@@ -11,7 +11,7 @@ import {
 
 export interface SlashCommand {
   data: Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">;
-  execute: (i: CommandInteraction) => Promise<any>;
+  execute: (i: CommandInteraction) => Promise<void>;
 }
 
 export class QuackClient extends Client {
@@ -19,10 +19,10 @@ export class QuackClient extends Client {
 }
 
 export const rootDir = (() => {
-  let checkDir: string = path.resolve(".");
+  let checkDir: string = path.resolve(__dirname);
   const pathsep = path.sep;
 
-  const fullPath = path.resolve(".").split(pathsep).reverse();
+  const fullPath = path.resolve(__dirname).split(pathsep).reverse();
 
   for (const _ of fullPath) {
     const dirContents = filesystem.readdirSync(checkDir);

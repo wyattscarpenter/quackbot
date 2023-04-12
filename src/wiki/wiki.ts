@@ -26,5 +26,3 @@ async function main() {
   const c = await getWikiSummary("botswana");
   console.log(c);
 }
-
-main();

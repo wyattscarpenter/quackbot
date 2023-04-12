@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "master" ]
  
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -17,50 +16,59 @@ jobs:
     - name: Prepare deployment secrets
       run: |
         echo '{' > secret.json
-        echo '"token" : "${{ secrets.DISCORD_CLIENT_OAUTH_TOKEN }}"' >> secret.json
-        echo '"clientId" : "${{ secrets.DISCORD_CLIENT.ID }}"' >> secret.json
+        echo '"token" : "${{ secrets.DISCORD_CLIENT_OAUTH_TOKEN }}",' >> secret.json
+        echo '"clientId" : "${{ secrets.DISCORD_CLIENT_ID }}",' >> secret.json
         echo '"guildId" : "${{ secrets.TESTING_GUILD_ID }}"' >> secret.json
         echo '}' >> secret.json
+        cat secret.json
         
     - name: Prepare SSH environment
+      run: |
+        echo "SSH_KEY_PATH=$SSH_KEY_PATH" >> $GITHUB_ENV
+        mkdir -p ~/.ssh/
+        echo "$SSH_PRIVATE_KEY" > ../private.key
+        sudo chmod 600 ../private.key
+        echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
       shell: bash
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.HOST_SSH_KEY }}
-        SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-        SSH_USER: ${{ secrets.HOST_LOGIN }}
-        SSH_HOST: ${{ secrets.HOST_ADDRESS }}
-        SSH_KEYPATH: ~/.ssh/private.key 
-    
-    - name: Configure SSH paths
-      run: |
-        echo "$SSH_PRIVATE_KEY" > "$SSH_KEYPATH"
-        echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          SSH_PRIVATE_KEY: ${{ secrets.HOST_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          SSH_KEY_PATH: ../private.key
         
     - name: Collect and compress build artifact 
-      run: |
+      run: >
         tar -czvf quackbot.tar.gz
         build
         data
         secret.json
         package.json
         Makefile 
+        
     - name: Connect to deployment server, upload and extract build files
       run: |
-        scp -i "$SSH_KEYPATH" quackbot.tar.gz "$SSH_USER@SSH_HOST":~/quackbot/quackbot.tar.gz
-        ssh -i "$SSH_KEYPATH" "$SSH_USER@$SSH_HOST" "cd ~/quackbot && tar -xzvf quackbot.tar.gz && rm quackbot.tar.gz"
+        scp -i ${{ env.SSH_KEY_PATH }} -o StrictHostKeyChecking=no quackbot.tar.gz ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }}:~/quackbot/quackbot.tar.gz
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} "cd ~/quackbot && tar -xzvf quackbot.tar.gz && rm quackbot.tar.gz"
         
+        
+    - name: Configure node version
+      run: |
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS}} "sudo apt install nodejs npm"
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS}} "sudo npm install n -g && sudo n lts"
+      
     - name: Ensure production dependencies are installed 
       run: | 
-        ssh -i "$SSH_KEYPATH" "$SSH_USER@$SSH_HOST" "sudo apt install tmux imagemagick node npm"
-        ssh -i "$SSH_KEYPATH" "$SSH_USER@$SSH_HOST" "cd ~/quackbot && make install-prod"
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS}} "sudo apt install tmux imagemagick nodejs npm"
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} "cd ~/quackbot && make install-prod"
+        
+
     
-    - name: Kill running process if present
-      run: ssh -i "$SSH_KEYPATH" "$SSH_USER@$SSH_HOST" 'tmux kill-session -t quackbot || echo "no process running"'
+    - name: Setup tmux container for process
+      run: |
+       ssh -i ${{ env.SSH_KEY_PATH }}  ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} 'tmux kill-session -t quackbot || echo "no process running"'
+       ssh -i ${{ env.SSH_KEY_PATH }}  ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} 'tmux new-session -s quackbot -d'
+      
         
     - name: Run for deployment
-      run: ssh -i "$SSH_KEYPATH" "$SSH_USER@$SSH_HOST" tmux new-session -s quackbot -d "cd ~/quackbot && make deploy"
-      
-    - name: Cleanup
-      run: rm "$SSH_KEYPATH"
-
-
+      run: > 
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} 
+        tmux send -t quackbot.0 '"node ~/quackbot/build/deploy_commands.js && node ~/quackbot/build/index.js"' ENTER

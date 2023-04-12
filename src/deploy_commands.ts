@@ -8,7 +8,6 @@ const commands_json = [];
 for (let c of commands) {
   commands_json.push(c.data.toJSON());
 }
-
 (async () => {
   try {
     console.log(
@@ -24,3 +23,6 @@ for (let c of commands) {
     console.error(error);
   }
 })();
+
+
+
