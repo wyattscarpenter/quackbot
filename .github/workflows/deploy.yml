@@ -1,0 +1,66 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ "master" ]
+ 
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install build dependencies and compile typescript
+      run: make build
+      
+    - name: Prepare deployment secrets
+      run: |
+        echo '{' > secret.json
+        echo '"token" : "${{ secrets.DISCORD_CLIENT_OAUTH_TOKEN }}"' >> secret.json
+        echo '"clientId" : "${{ secrets.DISCORD_CLIENT.ID }}"' >> secret.json
+        echo '"guildId" : "${{ secrets.TESTING_GUILD_ID }}"' >> secret.json
+        echo '}' >> secret.json
+        
+    - name: Prepare SSH environment
+      shell: bash
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.HOST_SSH_KEY }}
+        SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        SSH_USER: ${{ secrets.HOST_LOGIN }}
+        SSH_HOST: ${{ secrets.HOST_ADDRESS }}
+        SSH_KEYPATH: ~/.ssh/private.key 
+    
+    - name: Configure SSH paths
+      run: |
+        echo "$SSH_PRIVATE_KEY" > "$SSH_KEYPATH"
+        echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        
+    - name: Collect and compress build artifact 
+      run: |
+        tar -czvf quackbot.tar.gz
+        build
+        data
+        secret.json
+        package.json
+        Makefile 
+    - name: Connect to deployment server, upload and extract build files
+      run: |
+        scp -i "$SSH_KEYPATH" quackbot.tar.gz "$SSH_USER@SSH_HOST":~/quackbot/quackbot.tar.gz
+        ssh -i "$SSH_KEYPATH" "$SSH_USER@$SSH_HOST" "cd ~/quackbot && tar -xzvf quackbot.tar.gz && rm quackbot.tar.gz"
+        
+    - name: Ensure production dependencies are installed 
+      run: | 
+        ssh -i "$SSH_KEYPATH" "$SSH_USER@$SSH_HOST" "sudo apt install tmux imagemagick node npm"
+        ssh -i "$SSH_KEYPATH" "$SSH_USER@$SSH_HOST" "cd ~/quackbot && make install-prod"
+    
+    - name: Kill running process if present
+      run: ssh -i "$SSH_KEYPATH" "$SSH_USER@$SSH_HOST" 'tmux kill-session -t quackbot || echo "no process running"'
+        
+    - name: Run for deployment
+      run: ssh -i "$SSH_KEYPATH" "$SSH_USER@$SSH_HOST" tmux new-session -s quackbot -d "cd ~/quackbot && make deploy"
+      
+    - name: Cleanup
+      run: rm "$SSH_KEYPATH"
+
+

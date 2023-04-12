@@ -9,7 +9,6 @@
     "clean": "gts clean",
     "compile": "tsc",
     "fix": "gts fix",
-    "prepare": "npm run compile",
     "pretest": "npm run compile",
     "posttest": "npm run lint"
   },
@@ -32,15 +31,12 @@
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
     "eslint": "^7.32.0",
-    "gm": "^1.25.0",
     "prettier": "^2.8.4",
-    "typescript": "~4.7.0",
-    "wikijs": "^6.4.1"
+    "typescript": "~4.7.0"
   },
   "dependencies": {
-    "@jimp/types": "^0.22.7",
-    "@napi-rs/canvas": "^0.1.39",
     "discord.js": "^14.8.0",
-    "jimp": "^0.22.7"
+    "gm": "^1.25.0",
+    "wikijs": "^6.4.1"
   }
 }
