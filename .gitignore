@@ -5,8 +5,9 @@ build/
 
 generated/
 
-#TODO uncomment before repo is public
-#secret.json
+*.tar.gz
+secret.json
+
 
 lib-cov
 *.seed
