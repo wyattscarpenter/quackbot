@@ -15,16 +15,16 @@ jobs:
       
     - name: Setup environment for production instance
       run: |
-        echo "CLIENT_TOKEN=${{ secrets.DISCORD_CLIENT_ID }}" >> $GITHUB_ENV
-        echo "CLIENT_ID=${{ secrets.DISCORD_CLIENT_OAUTH_TOKEN }}" >> $GITHUB_ENV
+        echo "CLIENT_ID=${{ secrets.DISCORD_CLIENT_ID }}" >> $GITHUB_ENV
+        echo "CLIENT_TOKEN=${{ secrets.DISCORD_CLIENT_OAUTH_TOKEN }}" >> $GITHUB_ENV
         echo "PROCESS_NAME=quackbot" >> $GITHUB_ENV
         echo "DEPLOY_FLAG=global" >> $GITHUB_ENV
       if: ${{ endsWith(github.ref, 'master') }} 
 
     - name: Setup environment for testing instance
       run: |
-        echo "CLIENT_TOKEN=${{ secrets.TESTING_DISCORD_CLIENT_ID }}" >> $GITHUB_ENV
-        echo "CLIENT_ID=${{ secrets.TESTING_DISCORD_OAUTH_TOKEN }}" >> $GITHUB_ENV
+        echo "CLIENT_ID=${{ secrets.TESTING_DISCORD_CLIENT_ID }}" >> $GITHUB_ENV
+        echo "CLIENT_TOKEN=${{ secrets.TESTING_DISCORD_OAUTH_TOKEN }}" >> $GITHUB_ENV
         echo "PROCESS_NAME=unstable_quackbot" >> $GITHUB_ENV
         echo "DEPLOY_FLAG=testing" >> $GITHUB_ENV
       if: ${{ endsWith(github.ref, 'unstable') }} 
