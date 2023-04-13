@@ -2,25 +2,35 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [ "master" ]
+    branches: 
+      - master
+      - unstable
  
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    
-    - name: Install build dependencies and compile typescript
-      run: make build
+
       
-    - name: Prepare deployment secrets
+    - name: Setup environment for testing instance
       run: |
-        echo '{' > secret.json
-        echo '"token" : "${{ secrets.DISCORD_CLIENT_OAUTH_TOKEN }}",' >> secret.json
-        echo '"clientId" : "${{ secrets.DISCORD_CLIENT_ID }}",' >> secret.json
-        echo '"guildId" : "${{ secrets.TESTING_GUILD_ID }}"' >> secret.json
-        echo '}' >> secret.json
-        cat secret.json
+        echo "CLIENT_TOKEN=${{ secrets.DISCORD_CLIENT_ID }}" >> $GITHUB_ENV
+        echo "CLIENT_ID=${{ secrets.DISCORD_OAUTH_TOKEN }}" >> $GITHUB_ENV
+        echo "PROCESS_NAME=unstable_quackbot" >> $GITHUB_ENV
+        echo "DEPLOY_FLAG=testing" >> $GITHUB_ENV
+      if: ${{ contains('unstable', github.GITHUB_REF_NAME) }} 
+
+    - name: Setup environment for production instance
+      run: |
+        
+        echo "CLIENT_TOKEN=${{ secrets.TESTING_DISCORD_CLIENT_ID }}" >> $GITHUB_ENV
+        echo "CLIENT_ID=${{ secrets.TESTING_DISCORD_OAUTH_TOKEN }}" >> $GITHUB_ENV
+        echo "PROCESS_NAME=quackbot" >> $GITHUB_ENV
+        echo "DEPLOY_FLAG=global" >> $GITHUB_ENV
+
+      if: ${{ contains('master', github.GITHUB_REF_NAME) }} 
+        
         
     - name: Prepare SSH environment
       run: |
@@ -35,6 +45,19 @@ jobs:
           SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
           SSH_KEY_PATH: ../private.key
         
+    
+    - name: Install build dependencies and compile typescript
+      run: make build
+      
+    - name: Prepare deployment secrets
+      run: |
+        echo '{' > secret.json
+        echo '"token" : "${{ env.CLIENT_TOKEN }}",' >> secret.json
+        echo '"clientId" : "${{ env.CLIENT_ID }}",' >> secret.json
+        echo '"guildId" : "${{ secrets.TESTING_GUILD_ID }}"' >> secret.json
+        echo '}' >> secret.json
+
+        
     - name: Collect and compress build artifact 
       run: >
         tar -czvf quackbot.tar.gz
@@ -46,8 +69,10 @@ jobs:
         
     - name: Connect to deployment server, upload and extract build files
       run: |
-        scp -i ${{ env.SSH_KEY_PATH }} -o StrictHostKeyChecking=no quackbot.tar.gz ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }}:~/quackbot/quackbot.tar.gz
-        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} "cd ~/quackbot && tar -xzvf quackbot.tar.gz && rm quackbot.tar.gz"
+        
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} mkdir -p ~/${{ env.PROCESS_NAME }}
+        scp -i ${{ env.SSH_KEY_PATH }} -o StrictHostKeyChecking=no quackbot.tar.gz ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }}: ~/${{ env.PROCESS_NAME }}/quackbot.tar.gz
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} cd ~/${{ env.PROCESS_NAME }} && tar -xzvf quackbot.tar.gz && rm quackbot.tar.gz"
         
         
     - name: Configure node version
@@ -57,18 +82,25 @@ jobs:
       
     - name: Ensure production dependencies are installed 
       run: | 
-        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS}} "sudo apt install tmux imagemagick nodejs npm"
-        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} "cd ~/quackbot && make install-prod"
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS}} "sudo apt install tmux imagemagick"
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} "cd ~/${{ env.PROCESS_NAME }} && npm i --omit=dev"
         
 
     
     - name: Setup tmux container for process
       run: |
-       ssh -i ${{ env.SSH_KEY_PATH }}  ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} 'tmux kill-session -t quackbot || echo "no process running"'
-       ssh -i ${{ env.SSH_KEY_PATH }}  ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} 'tmux new-session -s quackbot -d'
+       ssh -i ${{ env.SSH_KEY_PATH }}  ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} tmux kill-session -t ${{ env.PROCESS_NAME }} || echo "no process running"
+       ssh -i ${{ env.SSH_KEY_PATH }}  ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} tmux new-session -s ${{ env.PROCESS_NAME }} -d
+
+    - name: Register slash commands
+      run: > 
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} 
+        node ~/quackbot/build/deploy_commands.js  ${{ env.DEPLOY_FLAG }}
       
         
     - name: Run for deployment
       run: > 
         ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} 
-        tmux send -t quackbot.0 '"node ~/quackbot/build/deploy_commands.js && node ~/quackbot/build/index.js"' ENTER
+        tmux send -t ${{ env.PROCESS_NAME }} '"node ~/${{ env.PROCESS_NAME }}/build/index.js"' ENTER
+
+        
