@@ -19,7 +19,7 @@ jobs:
         echo "CLIENT_ID=${{ secrets.DISCORD_OAUTH_TOKEN }}" >> $GITHUB_ENV
         echo "PROCESS_NAME=quackbot" >> $GITHUB_ENV
         echo "DEPLOY_FLAG=global" >> $GITHUB_ENV
-      if: ${{ contains('master', github.GITHUB_REF_NAME) }} 
+      if: ${{ contains('master', github.ref) }} 
 
     - name: Setup environment for testing instance
       run: |
@@ -28,11 +28,12 @@ jobs:
         echo "PROCESS_NAME=unstable_quackbot" >> $GITHUB_ENV
         echo "DEPLOY_FLAG=testing" >> $GITHUB_ENV
         
-      if: ${{ contains('unstable', github.GITHUB_REF_NAME) }} 
+      if: ${{ contains('unstable', github.ref) }} 
         
         
     - name: Prepare SSH environment
       run: |
+        echo "${{ github.ref }}"
         echo "SSH_KEY_PATH=$SSH_KEY_PATH" >> $GITHUB_ENV
         mkdir -p ~/.ssh/
         echo "$SSH_PRIVATE_KEY" > ../private.key
