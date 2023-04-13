@@ -95,7 +95,7 @@ jobs:
     - name: Register slash commands
       run: > 
         ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} 
-        "node ~/quackbot/build/deploy_commands.js  ${{ env.DEPLOY_FLAG }}"
+        "node ~/${{ env.PROCESS_NAME }}/build/deploy_commands.js  ${{ env.DEPLOY_FLAG }}"
       
         
     - name: Run for deployment
