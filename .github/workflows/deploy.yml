@@ -71,7 +71,7 @@ jobs:
       run: |
         
         ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} -o StrictHostKeyChecking=no "cd ~ && mkdir -p ${{ env.PROCESS_NAME }}"
-        scp -i ${{ env.SSH_KEY_PATH }}  quackbot.tar.gz ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }}: ~/${{ env.PROCESS_NAME }}/quackbot.tar.gz
+        scp -i ${{ env.SSH_KEY_PATH }}  quackbot.tar.gz ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }}:~/${{ env.PROCESS_NAME }}/quackbot.tar.gz
         ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} "cd ~/${{ env.PROCESS_NAME }} && tar -xzvf quackbot.tar.gz && rm quackbot.tar.gz"
         
         
