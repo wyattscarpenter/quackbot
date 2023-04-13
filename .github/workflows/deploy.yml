@@ -27,7 +27,7 @@ jobs:
         echo "CLIENT_ID=${{ secrets.TESTING_DISCORD_OAUTH_TOKEN }}" >> $GITHUB_ENV
         echo "PROCESS_NAME=unstable_quackbot" >> $GITHUB_ENV
         echo "DEPLOY_FLAG=testing" >> $GITHUB_ENV
-      if: ${{ endsWith(github.ref, 'unstable' }} 
+      if: ${{ endsWith(github.ref, 'unstable') }} 
         
         
     - name: Prepare SSH environment
