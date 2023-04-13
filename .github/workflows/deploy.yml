@@ -51,7 +51,6 @@ jobs:
       
     - name: Prepare deployment secrets
       run: |
-        cd ~/${{ env.PROCESS_NAME }}
         echo '{' > secret.json
         echo '"token" : "${{ env.CLIENT_TOKEN }}",' >> secret.json
         echo '"clientId" : "${{ env.CLIENT_ID }}",' >> secret.json
