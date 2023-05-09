@@ -22,7 +22,7 @@ const make_embed = (data: WikipediaSummary): EmbedBuilder => {
   return embed;
 };
 
-let _commands: Array<SlashCommand> = [];
+const _commands: Array<SlashCommand> = [];
 
 const wikiCommand = (() => {
   const wikiCommandData = new SlashCommandBuilder()

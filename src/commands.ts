@@ -8,7 +8,7 @@ import * as fs from "node:fs";
 const commands_extern = (() => {
   let _commands: Array<SlashCommand> = [];
 
-  for (let dir of fs.readdirSync(__dirname, { withFileTypes: true })) {
+  for (const dir of fs.readdirSync(__dirname, { withFileTypes: true })) {
     if (!dir.isDirectory()) {
       continue;
     }
