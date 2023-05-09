@@ -42,4 +42,11 @@ export const imagePath = path.join(dataPath, "image-templates");
 export const fontsPath = path.join(dataPath, "fonts");
 
 export const secretPath = path.join(rootDir, "./secret.json");
-export const secrets = require(secretPath);
+
+export let secrets: {token: string; clientId: string; guildId: string;};
+try{
+  secrets = require(secretPath);
+} catch {
+  console.log("Could not find ./secret.json, defaulting to a local version of quackbot that will not connect to any discord servers.")
+  secrets = {token: "LOCAL", clientId: "CLIENTLOCAL", guildId: "GUILDLOCAL"};
+}

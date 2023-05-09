@@ -1,0 +1,1 @@
+Ask not for whom the bot quacks—he quacks for thee!

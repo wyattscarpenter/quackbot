@@ -11,7 +11,7 @@ import {
   SlashCommandStringOption,
 } from "discord.js";
 
-let _commands: Array<SlashCommand> = MacroDefs.map((macro) => {
+const _commands: Array<SlashCommand> = MacroDefs.map((macro) => {
   const macroCommandData = new SlashCommandBuilder()
     .setName(macro.name)
     .setDescription(
