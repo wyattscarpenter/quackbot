@@ -3,7 +3,7 @@ temp/
 core/config.json
 build/
 
-generated/
+generated/*
 
 *.tar.gz
 secret.json
