@@ -19,7 +19,7 @@ export interface ImageMacro {
   text_size?: number;
   font?: string;
   text_color?: string;
-  allcaps?: Boolean;
+  allcaps?: boolean;
 }
 
 const Clueless: ImageMacro = {
@@ -60,7 +60,7 @@ const wrapText = (text: string, line_chars: number) => {
   let line_count = 0;
   let output_str = "";
 
-  for (let word of words) {
+  for (const word of words) {
     line_count += word.length;
 
     if (line_count > line_chars) {

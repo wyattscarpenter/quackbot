@@ -11,7 +11,7 @@ import {
   SlashCommandStringOption,
 } from "discord.js";
 
-let _commands: Array<SlashCommand> = MacroDefs.map((macro) => {
+const _commands: Array<SlashCommand> = MacroDefs.map((macro) => {
   const macroCommandData = new SlashCommandBuilder()
     .setName(macro.name)
     .setDescription(
@@ -61,6 +61,7 @@ const yudCommand = (() => {
       name: path.basename(yud_path),
     });
 
+    await interaction.reply({ files: [yud_image] });
   };
 
   return { data: yudCommandData, execute: execute };

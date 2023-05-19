@@ -4,13 +4,15 @@
   "description": "The swiss army discord bot",
   "main": "index.js",
   "scripts": {
+    "start": "npm run clean && npm run lint && npm run compile && node build/index.js",
+    "fast-start": "tsc && node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "gts lint",
+    "lint": "gts lint src/",
     "clean": "gts clean",
     "compile": "tsc",
     "fix": "gts fix",
     "pretest": "npm run compile",
-    "posttest": "npm run lint"
+    "posttest": "npm run lint src/"
   },
   "repository": {
     "type": "git",
@@ -32,7 +34,8 @@
     "@typescript-eslint/parser": "^5.55.0",
     "eslint": "^7.32.0",
     "prettier": "^2.8.4",
-    "typescript": "~4.7.0"
+    "typescript": "~4.7.0",
+    "gts": "*"
   },
   "dependencies": {
     "discord.js": "^14.8.0",
