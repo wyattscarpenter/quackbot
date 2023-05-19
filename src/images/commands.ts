@@ -61,6 +61,7 @@ const yudCommand = (() => {
       name: path.basename(yud_path),
     });
 
+    await interaction.reply({ files: [yud_image] });
   };
 
   return { data: yudCommandData, execute: execute };
