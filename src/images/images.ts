@@ -81,14 +81,19 @@ export async function addImageText(macro: ImageMacro, text: string) {
 
    const output_path = path.join(generatedPath, `generated_${macro.filename}`);
 
-  if (fs.existsSync(output_path)) {
-    fs.rmSync(output_path);
+
+  if (!fs.existsSync(generatedPath)){
+  fs.mkdirSync(generatedPath)
   }
 
-  gm(output_path).createDirectories();
+
 
   const image_base_path = path.join(imagePath, macro.filename);
   const font_path = path.join(fontsPath, macro.font ?? "FreeSansBold.otf");
+
+  //imageMagick doesn't like to create and write to a file in the same step
+  //hopefully this will placate it
+  fs.copyFileSync(image_base_path, output_path)
 
   const [x, y] = macro.text_position;
   console.log(macro.filename);
