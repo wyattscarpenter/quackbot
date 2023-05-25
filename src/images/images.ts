@@ -51,7 +51,52 @@ const Farquaad: ImageMacro = {
   allcaps: true,
 };
 
-export const MacroDefs = [Clueless, Rdj, Farquaad];
+const Ahsweet: ImageMacro = {
+  filename: "ahsweet.png",
+  line_length: 15,
+  text_position: [30, 130],
+  text_size: 45,
+  font: "impact.ttf",
+  name: "ahsweet",
+  text_color: "#000000",
+  allcaps: true,
+};
+
+const Scumbagsteve: ImageMacro = {
+  filename: "scumbagsteve.jpg",
+  line_length: 15,
+  text_position: [20, 430],
+  text_size: 45,
+  font: "impact.ttf",
+  name: "scumbagsteve",
+  text_color: "#ffffff",
+  allcaps: true,
+};
+
+const Goodguygreg: ImageMacro = { //It does somewhat bother me that our 400px goodguygreg image is not the original, larger size (600px?). But not enough to go hunt down the original
+  filename: "goodguygreg.jpg",
+  line_length: 15,
+  text_position: [10, 300],
+  text_size: 45,
+  font: "impact.ttf",
+  name: "goodguygreg",
+  text_color: "#ffffff",
+  allcaps: true,
+};
+
+const Scalia: ImageMacro = { 
+  filename: "scalia.jpg",
+  line_length: 15,
+  text_position: [100, 1060],
+  text_size: 120,
+  font: "impact.ttf",
+  name: "scalia",
+  text_color: "#ffffff",
+  allcaps: true,
+};
+
+
+export const MacroDefs = [Clueless, Rdj, Farquaad, Ahsweet, Scumbagsteve, Goodguygreg, Scalia];
 
 const wrapText = (text: string, line_chars: number) => {
   const re = /\s+/;
