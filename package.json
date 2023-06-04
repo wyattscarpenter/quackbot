@@ -10,7 +10,7 @@
     "lint": "gts lint src/",
     "clean": "gts clean",
     "compile": "tsc",
-    "fix": "gts fix",
+    "fix": "gts fix src/",
     "pretest": "npm run compile",
     "posttest": "npm run lint src/"
   },
