@@ -109,6 +109,16 @@ export const MacroDefs : ImageMacro[] = [
     text_color: "#ffffff",
     allcaps: true,
   },
+  {
+    filename: "newspapercat.png",
+    line_length: 200,
+    text_position: [30, 390],
+    text_size: 40,
+    font: "impact.ttf",
+    name: "newspapercat",
+    text_color: "#ffffff",
+    allcaps: true,
+  },
 ];
 
 const wrapText = (text: string, line_chars: number) => {
