@@ -7,7 +7,6 @@ import {fontsPath, imagePath, rootDir} from "../util";
 
 export const gm = _gm.subClass({imageMagick : true});
 
-// TODO possibly: make the macros a JSON for more modularity
 export interface ImageMacro {
   name: string;
   filename: string;
