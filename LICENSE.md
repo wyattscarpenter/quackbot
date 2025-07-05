@@ -1,6 +1,6 @@
 BSD 2-Clause License
 
-Copyright (c) 2023, Keaton Guderian
+Copyright (c) 2023, Keaton Guderian; July 2025–, Wyatt S Carpenter
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
