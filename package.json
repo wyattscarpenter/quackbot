@@ -4,8 +4,8 @@
   "description": "The swiss army discord bot",
   "main": "index.js",
   "scripts": {
-    "start": "npm run clean && npm run lint && npm run compile && node build/index.js",
-    "fast-start": "tsc && node build/index.js",
+    "full-start": "npm run clean && npm run lint && npm run compile && node build/index.js",
+    "start": "tsc && node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "gts lint src/",
     "clean": "gts clean",
