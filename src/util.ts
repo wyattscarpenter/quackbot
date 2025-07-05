@@ -6,7 +6,6 @@ import {
   Client,
   Collection,
   SlashCommandBuilder,
-  Message,
 } from "discord.js";
 
 export interface SlashCommand {
@@ -46,7 +45,8 @@ export const secretPath = path.join(rootDir, "./secret.json");
 export let secrets: {token: string; clientId: string; guildId: string;};
 try{
   secrets = require(secretPath);
-} catch {
-  console.log("Could not find ./secret.json, defaulting to a local version of quackbot that will not connect to any discord servers.")
+} catch (e) {
+  console.log("Could not find ./secret.json, defaulting to a local version of quackbot that will not connect to any discord servers.");
+  console.log("Original error:", e);
   secrets = {token: "LOCAL", clientId: "CLIENTLOCAL", guildId: "GUILDLOCAL"};
 }
