@@ -1,6 +1,6 @@
 {
   "name": "quackbot",
-  "version": "1.0.1-dev",
+  "version": "1.0.1",
   "description": "The swiss army discord bot",
   "main": "index.js",
   "scripts": {

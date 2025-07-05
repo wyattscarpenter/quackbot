@@ -1,11 +1,9 @@
 import { SlashCommand } from "../util";
 import { getWikiSummary, WikipediaSummary } from "./wiki";
 import {
-  AttachmentBuilder,
   CommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
-  Embed,
   SlashCommandStringOption,
 } from "discord.js";
 
