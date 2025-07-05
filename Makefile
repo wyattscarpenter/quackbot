@@ -1,19 +1,19 @@
 build: install
 	npx tsc
 
-run: install 
+run: install
 	node build
 
 register: build
-	npx ts-node src/deploy_commands.ts 
+	npx ts-node src/deploy_commands.ts
 
-install: 
+install:
 	npm i
 
 
 install-prod:
-	npm i --omit=dev 
+	npm i --omit=dev
 
-deploy: 
+deploy:
 	node build/deploy_commands.js
 	node build/index.js

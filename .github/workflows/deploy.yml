@@ -2,24 +2,24 @@ name: Build and Deploy
 
 on:
   push:
-    branches: 
+    branches:
       - master
       - unstable
- 
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
 
-      
+
     - name: Setup environment for production instance
       run: |
         echo "CLIENT_ID=${{ secrets.DISCORD_CLIENT_ID }}" >> $GITHUB_ENV
         echo "CLIENT_TOKEN=${{ secrets.DISCORD_CLIENT_OAUTH_TOKEN }}" >> $GITHUB_ENV
         echo "PROCESS_NAME=quackbot" >> $GITHUB_ENV
         echo "DEPLOY_FLAG=global" >> $GITHUB_ENV
-      if: ${{ endsWith(github.ref, 'master') }} 
+      if: ${{ endsWith(github.ref, 'master') }}
 
     - name: Setup environment for testing instance
       run: |
@@ -27,9 +27,9 @@ jobs:
         echo "CLIENT_TOKEN=${{ secrets.TESTING_DISCORD_OAUTH_TOKEN }}" >> $GITHUB_ENV
         echo "PROCESS_NAME=unstable_quackbot" >> $GITHUB_ENV
         echo "DEPLOY_FLAG=testing" >> $GITHUB_ENV
-      if: ${{ endsWith(github.ref, 'unstable') }} 
-        
-        
+      if: ${{ endsWith(github.ref, 'unstable') }}
+
+
     - name: Prepare SSH environment
       run: |
         echo "${{ github.ref }}"
@@ -44,11 +44,11 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.HOST_SSH_KEY }}
           SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
           SSH_KEY_PATH: ../private.key
-        
-    
+
+
     - name: Install build dependencies and compile typescript
       run: make build
-      
+
     - name: Prepare deployment secrets
       run: |
         echo '{' > secret.json
@@ -57,50 +57,48 @@ jobs:
         echo '"guildId" : "${{ secrets.TESTING_GUILD_ID }}"' >> secret.json
         echo '}' >> secret.json
 
-        
-    - name: Collect and compress build artifact 
+
+    - name: Collect and compress build artifact
       run: >
         tar -czvf quackbot.tar.gz
         build
         data
         secret.json
         package.json
-        Makefile 
-        
+        Makefile
+
     - name: Connect to deployment server, upload and extract build files
       run: |
-        
+
         ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} -o StrictHostKeyChecking=no "cd ~ && mkdir -p ${{ env.PROCESS_NAME }}"
         scp -i ${{ env.SSH_KEY_PATH }}  quackbot.tar.gz ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }}:~/${{ env.PROCESS_NAME }}/quackbot.tar.gz
         ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} "cd ~/${{ env.PROCESS_NAME }} && tar -xzvf quackbot.tar.gz && rm quackbot.tar.gz"
-        
-        
+
+
     - name: Configure node version
       run: |
         ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS}} "sudo apt install nodejs npm"
         ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS}} "sudo npm install n -g && sudo n lts"
-      
-    - name: Ensure production dependencies are installed 
-      run: | 
+
+    - name: Ensure production dependencies are installed
+      run: |
         ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS}} "sudo apt install tmux imagemagick"
         ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} "cd ~/${{ env.PROCESS_NAME }} && npm i --omit=dev"
-        
 
-    
+
+
     - name: Setup tmux container for process
       run: |
        ssh -i ${{ env.SSH_KEY_PATH }}  ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} tmux kill-session -t ${{ env.PROCESS_NAME }} || echo "no process running"
        ssh -i ${{ env.SSH_KEY_PATH }}  ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} tmux new-session -s ${{ env.PROCESS_NAME }} -d
 
     - name: Register slash commands
-      run: > 
-        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} 
+      run: >
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }}
         "node ~/${{ env.PROCESS_NAME }}/build/deploy_commands.js  ${{ env.DEPLOY_FLAG }}"
-      
-        
-    - name: Run for deployment
-      run: > 
-        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }} 
-        tmux send -t ${{ env.PROCESS_NAME }} '"node ~/${{ env.PROCESS_NAME }}/build/index.js"' ENTER
 
-        
+
+    - name: Run for deployment
+      run: >
+        ssh -i ${{ env.SSH_KEY_PATH }} ${{ secrets.HOST_LOGIN }}@${{ secrets.HOST_ADDRESS }}
+        tmux send -t ${{ env.PROCESS_NAME }} '"node ~/${{ env.PROCESS_NAME }}/build/index.js"' ENTER
