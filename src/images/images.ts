@@ -117,6 +117,16 @@ export const MacroDefs: ImageMacro[] = [
     text_color: "#ffffff",
     allcaps: true,
   },
+  {
+    filename: "xzibit.jpg",
+    line_length: 50,
+    text_position: [10, 390],
+    text_size: 40,
+    font: "impact.ttf",
+    name: "xzibit",
+    text_color: "#ffffff",
+    allcaps: true,
+  },
 ];
 
 const wrapText = (text: string, line_chars: number) => {

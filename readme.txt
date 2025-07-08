@@ -9,3 +9,5 @@ Make a file secret.json at the root of this project directory, with contents lik
 I currently get a `Error [TokenInvalid]: An invalid token was provided.` error from the internals of discord.js whenever I try to use a perfectly-valid, freshly-minted token, which is annoying, so I stopped trying.
 
 .github/workflows/deploy.yml contains some hints as to what you have to do to deploy quackbot, although it's also mixed up in a bunch of unnecessarily complex commands that manipulate a computer it used to run on that is no longer even online. So, there's that.
+
+Another thing that could be improved about this project (although I am unlikely to do so) is using https://github.com/bloomberg/ts-blank-space to run the bot during development, as waiting for tsc is annoyingly slow (or, something is slow, and I assume it's tsc). Tsc would continue to be used for full-start.

@@ -1,6 +1,6 @@
 {
   "name": "quackbot",
-  "version": "1.0.1",
+  "version": "1.1.0-dev",
   "description": "The swiss army discord bot",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/keagud/Quackbot.git"
+    "url": "git+https://github.com/wyattscarpenter/quackbot.git"
   },
   "keywords": [
     "discord"
@@ -24,9 +24,9 @@
   "author": "",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/keagud/Quackbot/issues"
+    "url": "https://github.com/wyattscarpenter/quackbot/issues"
   },
-  "homepage": "https://github.com/keagud/Quackbot#readme",
+  "homepage": "https://github.com/wyattscarpenter/quackbot#readme",
   "devDependencies": {
     "@types/gm": "^1.25.1",
     "@types/node": "^14.18.38",
