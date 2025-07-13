@@ -127,6 +127,16 @@ export const MacroDefs: ImageMacro[] = [
     text_color: "#ffffff",
     allcaps: true,
   },
+  {
+    filename: "megamind.png",
+    line_length: 26,
+    text_position: [10, 50],
+    text_size: 40,
+    font: "impact.ttf",
+    name: "megamind",
+    text_color: "#ffffff",
+    allcaps: true,
+  },
 ];
 
 const wrapText = (text: string, line_chars: number) => {
