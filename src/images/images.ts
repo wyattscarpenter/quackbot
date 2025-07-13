@@ -137,6 +137,16 @@ export const MacroDefs: ImageMacro[] = [
     text_color: "#ffffff",
     allcaps: true,
   },
+  {
+    filename: "where.png",
+    line_length: 14,
+    text_position: [280, 25.7],
+    text_size: 12,
+    font: "FreeSans.otf",
+    name: "where",
+    text_color: "#000",
+    allcaps: false,
+  },
 ];
 
 const wrapText = (text: string, line_chars: number) => {
